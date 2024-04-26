@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевірка на людяність</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Введіть число, що відображається:</h1>
+    <div id="pixels"></div>
+    <input type="text" id="userInput">
+    <button onclick="verifyInput()">Перевірити</button>
+    <div id="result"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const digitPatterns = {
+                '0': ["111", "101", "101", "101", "111"],
+                '1': ["010", "110", "010", "010", "111"],
+                '2': ["111", "001", "111", "100", "111"],
+                '3': ["111", "001", "111", "001", "111"],
+                '4': ["101", "101", "111", "001", "001"],
+                '5': ["111", "100", "111", "001", "111"],
+                '6': ["111", "100", "111", "101", "111"],
+                '7': ["111", "001", "001", "001", "001"],
+                '8': ["111", "101", "111", "101", "111"],
+                '9': ["111", "101", "111", "001", "111"]
+            };
+
+            let randomNumber = Math.floor(10 + Math.random() * 90);
+            let digits = randomNumber.toString().split('');
+            displayDigits(digits);
+
+            function displayDigits(digits) {
+                const displayArea = document.getElementById('pixels');
+                displayArea.innerHTML = '';
+                displayArea.style.display = 'flex';
+
+                digits.forEach(digit => {
+                    const pattern = digitPatterns[digit];
+                    const digitDiv = document.createElement('div');
+                    digitDiv.style.marginRight = '5px'; // Space between digits
+
+                    pattern.forEach(row => {
+                        const rowDiv = document.createElement('div');
+                        row.split('').forEach(pixel => {
+                            const pixelDiv = document.createElement('span');
+                            pixelDiv.className = pixel === '1' ? getRandomColorClass() : 'pixel white';
+                            rowDiv.appendChild(pixelDiv);
+                        });
+                        digitDiv.appendChild(rowDiv);
+                    });
+
+                    displayArea.appendChild(digitDiv);
+                });
+            }
+
+            function getRandomColorClass() {
+                const colors = ['black', 'red', 'green', 'blue'];
+                return 'pixel ' + colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            window.verifyInput = function () {
+                const userInput = document.getElementById('userInput').value;
+                const resultElement = document.getElementById('result');
+                if (userInput === randomNumber.toString()) {
+                    resultElement.textContent = 'Вірно!';
+                } else {
+                    resultElement.textContent = 'Помилка, спробуйте знову.';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
